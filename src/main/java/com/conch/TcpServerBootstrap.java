@@ -14,6 +14,8 @@ import javax.annotation.PreDestroy;
 
 import org.springframework.stereotype.Component;
 
+import com.conch.handler.PacketLengthDecodeHandler;
+
 @Component
 public class TcpServerBootstrap {
 
@@ -50,7 +52,8 @@ public class TcpServerBootstrap {
 								@Override
 								public void initChannel(SocketChannel ch)
 										throws Exception {
-									//TODO add new handler here!!
+									//2 byte legnth를 읽고, length 많큼의 패킷을 만들어 반환해준다!
+									ch.pipeline().addLast(new PacketLengthDecodeHandler(1024, 0, 2, 0, 2));
 								}
 							}).option(ChannelOption.SO_BACKLOG, 128) // (5)
 					.childOption(ChannelOption.SO_KEEPALIVE, true); // (6)
