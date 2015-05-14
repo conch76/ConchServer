@@ -1,16 +1,16 @@
 package com.conch.packet;
 
-import com.conch.packet.server.LoginPacket;
-import com.conch.packet.server.LogoutPacket;
+import com.conch.packet.request.LoginPacket;
+import com.conch.packet.request.LogoutPacket;
 
-public enum ServerPacketType {
+public enum RequestPacketType {
 	
 	LOGIN(LoginPacket.class),
 	LOGOUT(LogoutPacket.class);
 	
 	private Class<?> clazz;
 	
-	private ServerPacketType(Class<?> type) {
+	private RequestPacketType(Class<?> type) {
 		this.clazz = type;
 	}
 	
