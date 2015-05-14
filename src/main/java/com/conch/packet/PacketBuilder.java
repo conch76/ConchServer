@@ -1,14 +1,14 @@
 package com.conch.packet;
 
-import com.conch.packet.server.BaseServerPacket;
+import com.conch.packet.request.BaseRequestPacket;
 
 public class PacketBuilder {
 	
-	public static BaseServerPacket buildServerPacket(byte packetByte) {
-		BaseServerPacket packet = null;
+	public static BaseRequestPacket buildServerPacket(byte packetByte) {
+		BaseRequestPacket packet = null;
 		try {
-			ServerPacketType type = ServerPacketType.values()[packetByte];
-			packet = (BaseServerPacket) type.getPacketClass().newInstance();
+			RequestPacketType type = RequestPacketType.values()[packetByte];
+			packet = (BaseRequestPacket) type.getPacketClass().newInstance();
 			packet.setPacketType(type);
 		} catch (InstantiationException | IllegalAccessException e) {
 			throw new UnknownPacketException(e);
