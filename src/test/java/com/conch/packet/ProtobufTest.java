@@ -12,21 +12,27 @@ import com.conch.packet.request.LoginPacket;
 
 public class ProtobufTest {
 
-	private static String TEST_USER_ID = "myBadassUser";
-	private static String TEST_USER_PASSWORD = "myBadassUserpassword";
+	protected static String TEST_USER_ID = "myBadassUser";
+	protected static String TEST_USER_PASSWORD = "myBadassUserpassword";
+	
+	protected Schema<LoginPacket> loginSchema = RuntimeSchema.getSchema(LoginPacket.class);
 	
 	@Test
 	public void testRuntime() {
-		LoginPacket packet = new LoginPacket();
-		packet.setUserId(TEST_USER_ID);
-		packet.setUserPassword(TEST_USER_PASSWORD);
-		Schema<LoginPacket> schema = RuntimeSchema.getSchema(LoginPacket.class);
-		LinkedBuffer buffer = LinkedBuffer.allocate( LinkedBuffer.DEFAULT_BUFFER_SIZE );
-		byte [] bytes = ProtostuffIOUtil.toByteArray(packet, schema, buffer);
+		byte [] serializedData = serializeLoginPacketForTest();
 		
 		LoginPacket deserialized = new LoginPacket();
-		ProtostuffIOUtil.mergeFrom(bytes, deserialized, schema);
+		ProtostuffIOUtil.mergeFrom(serializedData, deserialized, loginSchema);
 		assertTrue(deserialized.getUserId().equals(TEST_USER_ID));
 		assertTrue(deserialized.getUserPassword().equals(TEST_USER_PASSWORD));
 	}
+
+	protected byte[] serializeLoginPacketForTest() {
+		LoginPacket packet = new LoginPacket();
+		packet.setUserId(TEST_USER_ID);
+		packet.setUserPassword(TEST_USER_PASSWORD);
+		LinkedBuffer buffer = LinkedBuffer.allocate( LinkedBuffer.DEFAULT_BUFFER_SIZE );
+		return ProtostuffIOUtil.toByteArray(packet, loginSchema, buffer);
+	}
+	
 }
