@@ -8,6 +8,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -45,21 +47,22 @@ public class TcpServerBootstrap {
 		EventLoopGroup bossGroup = new NioEventLoopGroup();
 		EventLoopGroup workerGroup = new NioEventLoopGroup();
 		try {
-			server = new ServerBootstrap(); // (2)
+			server = new ServerBootstrap(); 
 			server.group(bossGroup, workerGroup)
-					.channel(NioServerSocketChannel.class) // (3)
-					.childHandler(new ChannelInitializer<SocketChannel>() { // (4)
+					.channel(NioServerSocketChannel.class) 
+					.childHandler(new ChannelInitializer<SocketChannel>() { 
 								@Override
 								public void initChannel(SocketChannel ch)
 										throws Exception {
-									//2 byte legnth를 읽고, length 많큼의 패킷을 만들어 반환해준다!
+									//2 byte legnth를 읽고, length 많큼의 패킷을 만들어 반환해준다. pipeline 위에서 부터 차례대로 전달됨
+									ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO));
 									ch.pipeline().addLast(new PacketLengthDecodeHandler(1024, 0, 2, 0, 2));
 								}
-							}).option(ChannelOption.SO_BACKLOG, 128) // (5)
-					.childOption(ChannelOption.SO_KEEPALIVE, true); // (6)
+							}).option(ChannelOption.SO_BACKLOG, 128) 
+					.childOption(ChannelOption.SO_KEEPALIVE, true);
 
 			// Bind and start to accept incoming connections.
-			serverFuture = server.bind(port).sync().channel(); // (7)
+			serverFuture = server.bind(port).sync().channel(); 
 			System.out.println("STARTED SERVER WAITING FOR CONNECTION");
 			// Wait until the connection is closed.
 			serverFuture.closeFuture().sync();
