@@ -1,5 +1,8 @@
 package com.conch.handler;
 
+import com.conch.packet.PacketBuilder;
+import com.conch.packet.request.BaseRequestPacket;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
@@ -27,7 +30,10 @@ public class PacketLengthDecodeHandler extends LengthFieldBasedFrameDecoder {
 		
 		// read the packet type
 		byte packetType = decoded.readByte();
-		// TODO : do something with the packet!
-		return decoded;
+		// get rest of data block
+		byte[] data = new byte[decoded.readableBytes()];
+		decoded.readBytes(data);
+		BaseRequestPacket packet = PacketBuilder.buildRequestPacket(packetType, data);
+		return packet;
 	}
 }

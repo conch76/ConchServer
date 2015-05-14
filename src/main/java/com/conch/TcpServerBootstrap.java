@@ -17,6 +17,7 @@ import javax.annotation.PreDestroy;
 import org.springframework.stereotype.Component;
 
 import com.conch.handler.PacketLengthDecodeHandler;
+import com.conch.handler.RequestPacketHandler;
 
 @Component
 public class TcpServerBootstrap {
@@ -57,6 +58,7 @@ public class TcpServerBootstrap {
 									//2 byte legnth를 읽고, length 많큼의 패킷을 만들어 반환해준다. pipeline 위에서 부터 차례대로 전달됨
 									ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO));
 									ch.pipeline().addLast(new PacketLengthDecodeHandler(1024, 0, 2, 0, 2));
+									ch.pipeline().addLast(new RequestPacketHandler());
 								}
 							}).option(ChannelOption.SO_BACKLOG, 128) 
 					.childOption(ChannelOption.SO_KEEPALIVE, true);

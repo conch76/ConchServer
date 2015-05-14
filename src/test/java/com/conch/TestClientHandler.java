@@ -1,32 +1,40 @@
 package com.conch;
 
-import java.nio.ByteBuffer;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
+import io.protostuff.LinkedBuffer;
+import io.protostuff.ProtostuffIOUtil;
+import io.protostuff.Schema;
+import io.protostuff.runtime.RuntimeSchema;
+
+import com.conch.packet.request.LoginPacket;
 
 public class TestClientHandler extends ChannelHandlerAdapter {
-	 private final ByteBuf firstMessage;
-	 private final ByteBuf secondMessage;
 	 
-	 /**
+	 	/**
 	     * Creates a client-side handler.
 	     */
 	    public TestClientHandler() {
-	    	byte[] bytes = ByteBuffer.allocate(4).putShort((short) 1).array();
-	    	bytes[2] = 1; // type
-	    	bytes[3] = 2; // type
-	    	
-	        firstMessage = Unpooled.copiedBuffer(bytes);
-	        secondMessage = Unpooled.copiedBuffer(bytes);
 	    }
 
 	    @Override
 	    public void channelActive(ChannelHandlerContext ctx) {
-	        ctx.writeAndFlush(firstMessage);
-	        ctx.writeAndFlush(secondMessage);
+	    	Schema<LoginPacket> loginSchema = RuntimeSchema.getSchema(LoginPacket.class);
+	    	LoginPacket packet = new LoginPacket();
+			packet.setUserId("testMe");
+			packet.setUserPassword("testMe");
+			LinkedBuffer buffer = LinkedBuffer.allocate( LinkedBuffer.DEFAULT_BUFFER_SIZE );
+			byte [] data =  ProtostuffIOUtil.toByteArray(packet, loginSchema, buffer);
+			
+			ByteBuf lengthBytes = Unpooled.copyShort(data.length + 1);
+			byte [] packetType = new byte[1];
+			packetType[0] = 0; 
+			ByteBuf typeByte = Unpooled.copiedBuffer(packetType);
+			ByteBuf dataBytes = Unpooled.wrappedBuffer(data);
+			ByteBuf packetBytes = Unpooled.copiedBuffer(lengthBytes, typeByte, dataBytes);
+			ctx.writeAndFlush(packetBytes);
 	    }
 
 	    @Override
