@@ -17,6 +17,8 @@ public class RequestPacketHandler extends  ChannelHandlerAdapter {
 	    	  if (msg instanceof LoginPacket) {
 	    		  System.out.println(((LoginPacket) msg).getUserId());
 	    		  System.out.println(((LoginPacket) msg).getUserPassword());
+	    		  System.out.println("Writing msg in request handler");
+	    		  ctx.write(msg);
 	    	  }
 	      }
 	    }
