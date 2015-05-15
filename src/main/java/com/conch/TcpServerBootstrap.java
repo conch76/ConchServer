@@ -14,23 +14,24 @@ import io.netty.handler.logging.LoggingHandler;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.conch.handler.PacketLengthDecodeHandler;
 import com.conch.handler.RequestPacketHandler;
 import com.conch.handler.ResponsePacketHandler;
 
-@Component
+@Component(value="tcpServerBootstrap")
 public class TcpServerBootstrap {
-
-	private int port = 9999;
+	
+	@Value("${conch.server.port}")
+	private int port;
 	
 	protected ServerBootstrap server;
 	protected Channel serverFuture;
 
 	@PostConstruct
 	public void init() throws InterruptedException {
-		
 		new Thread(() -> {
 			try {
 				startServer();
@@ -68,6 +69,7 @@ public class TcpServerBootstrap {
 			// Bind and start to accept incoming connections.
 			serverFuture = server.bind(port).sync().channel(); 
 			System.out.println("STARTED SERVER WAITING FOR CONNECTION");
+			
 			// Wait until the connection is closed.
 			serverFuture.closeFuture().sync();
 		} finally {
