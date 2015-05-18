@@ -22,6 +22,6 @@ public class LoginPacket extends BaseRequestPacket {
 	}
 	@Override
 	public ServerTask createTask() {
-		return new LoginTask();
+		return new LoginTask(this);
 	}
 }

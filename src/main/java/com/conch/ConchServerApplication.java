@@ -6,6 +6,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
+import com.conch.service.PlayerManagerService;
+
 @SpringBootApplication
 public class ConchServerApplication {
 	
@@ -27,4 +29,8 @@ public class ConchServerApplication {
 	public static ApplicationContext getAppContext() {
     	return  context;
     }
+	
+	public static PlayerManagerService getPlayerManagerService() {
+		return context.getBean(PlayerManagerService.class);
+	}
 }

@@ -1,5 +1,7 @@
 package com.conch.player;
 
+import com.conch.domain.Player;
+
 public class PlayerSession {
 	
 	private long playerNumber;
