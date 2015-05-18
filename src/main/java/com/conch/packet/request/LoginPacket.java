@@ -1,5 +1,8 @@
 package com.conch.packet.request;
 
+import com.conch.server.task.LoginTask;
+import com.conch.server.task.ServerTask;
+
 
 public class LoginPacket extends BaseRequestPacket {
 	
@@ -17,5 +20,9 @@ public class LoginPacket extends BaseRequestPacket {
 	}
 	public void setUserPassword(String userPassword) {
 		this.userPassword = userPassword;
+	}
+	@Override
+	public ServerTask createTask() {
+		return new LoginTask();
 	}
 }
