@@ -20,9 +20,12 @@ public class ConchServerApplication {
         for (String beanName : beanNames) {
             System.out.println(beanName);
         }
+        // create mock data
+        context.getBean(MockDataService.class).createTestData();
     }
     
-    /**
+
+	/**
      * to be used by non spring beans...
      * @return ApplicationContext
      */
