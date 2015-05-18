@@ -24,7 +24,7 @@ public class ConchServerApplication {
      * to be used by non spring beans...
      * @return ApplicationContext
      */
-	public static ApplicationContext getSpringBean() {
+	public static ApplicationContext getAppContext() {
     	return  context;
     }
 }

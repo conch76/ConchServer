@@ -4,7 +4,7 @@ public class LogoutTask implements ServerTask {
 
 	@Override
 	public void processTask() {
-		// TODO Auto-generated method stub
+		System.out.println("Logut TASK!!!!!!!!");
 	}
 
 }
