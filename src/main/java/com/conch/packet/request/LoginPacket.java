@@ -3,7 +3,6 @@ package com.conch.packet.request;
 import com.conch.server.task.LoginTask;
 import com.conch.server.task.ServerTask;
 
-
 public class LoginPacket extends BaseRequestPacket {
 	
 	private String userId;

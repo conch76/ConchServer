@@ -1,11 +1,10 @@
 package com.conch.handler;
 
-import com.conch.packet.request.BaseRequestPacket;
-import com.conch.packet.request.LoginPacket;
-import com.conch.server.task.ServerTask;
-
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
+
+import com.conch.packet.request.BaseRequestPacket;
+import com.conch.server.task.ServerTask;
 
 public class RequestPacketHandler extends  ChannelHandlerAdapter {
 	
@@ -13,7 +12,7 @@ public class RequestPacketHandler extends  ChannelHandlerAdapter {
 	    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 	      super.channelRead(ctx, msg);
 	      if (msg instanceof BaseRequestPacket) {
-	    	  ServerTask task = ((BaseRequestPacket) msg).createTask();
+	    	  ServerTask task = (ServerTask) ((BaseRequestPacket) msg).createTask();
 	    	  // TODO : put this into queue for async processing
 	      }
 	    }
