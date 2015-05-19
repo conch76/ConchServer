@@ -1,5 +1,7 @@
 package com.conch.packet.request;
 
+import io.netty.channel.ChannelHandlerContext;
+
 import com.conch.packet.RequestPacketType;
 import com.conch.server.task.ServerTask;
 
@@ -15,5 +17,5 @@ public abstract class BaseRequestPacket {
 		this.packetType = packetType;
 	}
 	
-	public abstract ServerTask createTask();
+	public abstract ServerTask createTask(ChannelHandlerContext ctx);
 }

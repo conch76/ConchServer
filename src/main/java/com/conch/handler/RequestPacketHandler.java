@@ -22,7 +22,7 @@ public class RequestPacketHandler extends  ChannelHandlerAdapter {
 	    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 	      super.channelRead(ctx, msg);
 	      if (msg instanceof BaseRequestPacket) {
-	    	  ServerTask task = (ServerTask) ((BaseRequestPacket) msg).createTask();
+	    	  ServerTask task = (ServerTask) ((BaseRequestPacket) msg).createTask(ctx);
 	    	  taskService.submitTask(task);
 	    	  logger.debug("Submitted Server Task to Consumer queue");
 	      }
