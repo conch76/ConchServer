@@ -1,6 +1,10 @@
 package com.conch.service;
 
+import io.netty.channel.ChannelHandlerContext;
+
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +22,14 @@ public class PlayerManagerService {
 	
 	@Autowired
 	private PlayerService playerService;
+	
+	public void login(String userId, ChannelHandlerContext ctx) {
+		
+	}
+	
+	public void disconnect(ChannelHandlerContext ctx) {
+		playerSession.entrySet().stream().parallel().filter(e->e.getValue().getCtx() == ctx).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+	}
 	
 	public PlayerSession addPlayerSession(String userId) {
 		Player player = playerService.getPlayerByUserId(userId);

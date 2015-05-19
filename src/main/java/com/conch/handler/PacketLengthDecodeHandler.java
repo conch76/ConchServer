@@ -1,11 +1,11 @@
 package com.conch.handler;
 
-import com.conch.packet.PacketBuilder;
-import com.conch.packet.request.BaseRequestPacket;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+
+import com.conch.packet.PacketBuilder;
+import com.conch.packet.request.BaseRequestPacket;
 
 public class PacketLengthDecodeHandler extends LengthFieldBasedFrameDecoder {
 
@@ -36,4 +36,14 @@ public class PacketLengthDecodeHandler extends LengthFieldBasedFrameDecoder {
 		BaseRequestPacket packet = PacketBuilder.buildRequestPacket(packetType, data);
 		return packet;
 	}
+	
+	@Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+		
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    	
+    }
 }
