@@ -23,7 +23,7 @@ public class TestClientHandler extends ChannelHandlerAdapter {
 	    public void channelActive(ChannelHandlerContext ctx) {
 	    	Schema<LoginPacket> loginSchema = RuntimeSchema.getSchema(LoginPacket.class);
 	    	LoginPacket packet = new LoginPacket();
-			packet.setUserId("testMe");
+			packet.setUserId("test");
 			packet.setUserPassword("testMe");
 			LinkedBuffer buffer = LinkedBuffer.allocate( LinkedBuffer.DEFAULT_BUFFER_SIZE );
 			byte [] data =  ProtostuffIOUtil.toByteArray(packet, loginSchema, buffer);

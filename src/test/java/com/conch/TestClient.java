@@ -29,7 +29,7 @@ public class TestClient {
              });
 
             // Start the client.
-            ChannelFuture f = b.connect("127.0.0.1", 9999).sync();
+            ChannelFuture f = b.connect("127.0.0.1", 8888).sync();
 
             // Wait until the connection is closed.
             f.channel().closeFuture().sync();

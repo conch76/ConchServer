@@ -6,6 +6,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
+import com.conch.service.PlayerManagerService;
+
 @SpringBootApplication
 public class ConchServerApplication {
 	
@@ -18,13 +20,20 @@ public class ConchServerApplication {
         for (String beanName : beanNames) {
             System.out.println(beanName);
         }
+        // create mock data
+        context.getBean(MockDataService.class).createTestData();
     }
     
-    /**
+
+	/**
      * to be used by non spring beans...
      * @return ApplicationContext
      */
-	public static ApplicationContext getSpringBean() {
+	public static ApplicationContext getAppContext() {
     	return  context;
     }
+	
+	public static PlayerManagerService getPlayerManagerService() {
+		return context.getBean(PlayerManagerService.class);
+	}
 }
