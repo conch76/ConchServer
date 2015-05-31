@@ -4,6 +4,7 @@ import io.netty.channel.ChannelHandlerContext;
 
 import com.conch.packet.RequestPacketType;
 import com.conch.server.task.ServerTask;
+import com.conch.service.SessionManagerService;
 
 public abstract class BaseRequestPacket {
 	// trasient로 해야  protubuf가 serialize 안함
@@ -17,5 +18,5 @@ public abstract class BaseRequestPacket {
 		this.packetType = packetType;
 	}
 	
-	public abstract ServerTask createTask(ChannelHandlerContext ctx);
+	public abstract ServerTask createTask(ChannelHandlerContext ctx, SessionManagerService sessionService);
 }
