@@ -4,13 +4,30 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import com.conch.packet.PacketBuilder;
 import com.conch.packet.request.BaseRequestPacket;
+import com.conch.service.ClientSessionNumberService;
 
+@Component
+@Scope(value=ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PacketLengthDecodeHandler extends LengthFieldBasedFrameDecoder {
+	
+    @Autowired
+    private ClientSessionNumberService clientSessionService;
 
-	public PacketLengthDecodeHandler(int maxFrameLength, int lengthFieldOffset,
-			int lengthFieldLength, int lengthAdjustment, int initialBytesToStrip) {
+    @Autowired
+	public PacketLengthDecodeHandler(@Value("${handler.packet.max.frame}") int maxFrameLength, 
+									 @Value("${handler.packet.order}") int lengthFieldOffset,
+									 @Value("${handler.packet.length}") int lengthFieldLength,
+									 @Value("${handler.packet.adjustment}") int lengthAdjustment,
+									 @Value("${handler.packet.strip}") int initialBytesToStrip) {
+		
 		super(maxFrameLength, lengthFieldOffset, lengthFieldLength,
 				lengthAdjustment, initialBytesToStrip);
 	}
@@ -27,7 +44,6 @@ public class PacketLengthDecodeHandler extends LengthFieldBasedFrameDecoder {
 			return null;
 		}
 		
-		
 		// read the packet type
 		byte packetType = decoded.readByte();
 		// get rest of data block
@@ -37,13 +53,8 @@ public class PacketLengthDecodeHandler extends LengthFieldBasedFrameDecoder {
 		return packet;
 	}
 	
-	@Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		
-    }
-
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    	
+    	// TODO : should release client session
     }
 }

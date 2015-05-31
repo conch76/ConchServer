@@ -4,6 +4,7 @@ import io.netty.channel.ChannelHandlerContext;
 
 import com.conch.server.task.LoginTask;
 import com.conch.server.task.ServerTask;
+import com.conch.service.SessionManagerService;
 
 public class LoginPacket extends BaseRequestPacket {
 	
@@ -23,7 +24,7 @@ public class LoginPacket extends BaseRequestPacket {
 		this.userPassword = userPassword;
 	}
 	@Override
-	public ServerTask createTask(ChannelHandlerContext ctx) {
-		return new LoginTask(this, ctx);
+	public ServerTask createTask(ChannelHandlerContext ctx, SessionManagerService sessionService) {
+		return new LoginTask(this, ctx, sessionService);
 	}
 }

@@ -13,15 +13,22 @@ import com.conch.packet.request.LoginPacket;
 
 public class TestClientHandler extends ChannelHandlerAdapter {
 	 
+		int echoCount = 2;
+		
 	 	/**
 	     * Creates a client-side handler.
 	     */
 	    public TestClientHandler() {
+	    	System.out.println("CREATING NEW");
 	    }
 
 	    @Override
-	    public void channelActive(ChannelHandlerContext ctx) {
-	    	Schema<LoginPacket> loginSchema = RuntimeSchema.getSchema(LoginPacket.class);
+	    public void channelActive(ChannelHandlerContext ctx) throws InterruptedException {
+	    	sendLoginPacket(ctx);
+	    }
+
+		private void sendLoginPacket(ChannelHandlerContext ctx) {
+			Schema<LoginPacket> loginSchema = RuntimeSchema.getSchema(LoginPacket.class);
 	    	LoginPacket packet = new LoginPacket();
 			packet.setUserId("test");
 			packet.setUserPassword("testMe");
@@ -35,11 +42,14 @@ public class TestClientHandler extends ChannelHandlerAdapter {
 			ByteBuf dataBytes = Unpooled.wrappedBuffer(data);
 			ByteBuf packetBytes = Unpooled.copiedBuffer(lengthBytes, typeByte, dataBytes);
 			ctx.writeAndFlush(packetBytes);
-	    }
+		}
 
 	    @Override
 	    public void channelRead(ChannelHandlerContext ctx, Object msg) {
-	        ctx.write(msg);
+	    	if (echoCount > 0) {
+		    	echoCount--;
+		        sendLoginPacket(ctx);
+	    	}
 	    }
 
 	    @Override
@@ -53,4 +63,5 @@ public class TestClientHandler extends ChannelHandlerAdapter {
 	        cause.printStackTrace();
 	        ctx.close();
 	    }
+	    
 }

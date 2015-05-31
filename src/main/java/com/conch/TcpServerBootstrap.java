@@ -2,6 +2,7 @@ package com.conch;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -14,7 +15,11 @@ import io.netty.handler.logging.LoggingHandler;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.conch.handler.PacketLengthDecodeHandler;
@@ -24,11 +29,21 @@ import com.conch.handler.ResponsePacketHandler;
 @Component(value="tcpServerBootstrap")
 public class TcpServerBootstrap {
 	
+    private Logger logger = LoggerFactory.getLogger(getClass());
+	
 	@Value("${conch.server.port}")
 	private int port;
 	
 	protected ServerBootstrap server;
 	protected Channel serverFuture;
+	
+	@Autowired
+	private RequestPacketHandler requestPacketHandler;
+	@Autowired
+	private ResponsePacketHandler responsePacketHandler;
+	
+	@Autowired
+	private ApplicationContext appContext;
 
 	@PostConstruct
 	public void init() throws InterruptedException {
@@ -59,16 +74,21 @@ public class TcpServerBootstrap {
 										throws Exception {
 									//2 byte legnth를 읽고, length 많큼의 패킷을 만들어 반환해준다. pipeline 위에서 부터 차례대로 전달됨
 									ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO)); // inbound and outbound
-									ch.pipeline().addLast(new PacketLengthDecodeHandler(1024, 0, 2, 0, 2)); // inbound
-									ch.pipeline().addLast(new ResponsePacketHandler()); // outbound
-									ch.pipeline().addLast(new RequestPacketHandler()); // inbound
+									ch.pipeline().addLast(getPacketLengthHandler()); // inbound
+									ch.pipeline().addLast(responsePacketHandler); // outbound
+									ch.pipeline().addLast(requestPacketHandler); // inbound
+								}
+								// return new instance of packetLengthHandler, this is because
+								// LengthFieldBasedFrameDecoder is not @Shareable.  Netty desgin contract
+								private ChannelHandler getPacketLengthHandler() {
+									return appContext.getBean(PacketLengthDecodeHandler.class);
 								}
 							}).option(ChannelOption.SO_BACKLOG, 128) 
 					.childOption(ChannelOption.SO_KEEPALIVE, true);
 
 			// Bind and start to accept incoming connections.
 			serverFuture = server.bind(port).sync().channel(); 
-			System.out.println("STARTED SERVER WAITING FOR CONNECTION");
+			logger.debug("STARTED SERVER WAITING FOR CONNECTION");
 			
 			// Wait until the connection is closed.
 			serverFuture.closeFuture().sync();
