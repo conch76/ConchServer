@@ -24,7 +24,6 @@ public class ConchServerApplication {
         context.getBean(MockDataService.class).createTestData();
     }
     
-
 	/**
      * to be used by non spring beans...
      * @return ApplicationContext
@@ -32,8 +31,4 @@ public class ConchServerApplication {
 	public static ApplicationContext getAppContext() {
     	return  context;
     }
-	
-	public static PlayerManagerService getPlayerManagerService() {
-		return context.getBean(PlayerManagerService.class);
-	}
 }
