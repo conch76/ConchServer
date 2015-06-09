@@ -25,8 +25,9 @@ public class LoginTask implements ServerTask{
 	}
 	
 	private void processLogin(ChannelHandlerContext ctx, LoginPacket packet) {
+		
 		// store session in sessionManager and create playerSession
-		int sessionNumber = sessionService.createNewSession();
+		int sessionNumber = sessionService.createNewSession(ctx, packet);
 		// store session number in attribute key in channel.. to handle disconnect
 		Attribute<Integer> attribute = ctx.channel().attr(RequestPacketHandler.CHANNEL_KEY);
 		attribute.set(sessionNumber);

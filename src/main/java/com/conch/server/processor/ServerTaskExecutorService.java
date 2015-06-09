@@ -33,7 +33,7 @@ public class ServerTaskExecutorService {
 		// initialize queue
 		queue = new LinkedBlockingQueue<ServerTask>();
 		executorService = Executors.newFixedThreadPool(consumerThreadCount);
-		logger.debug("Initializing PriorityBlocking Queue...");
+		logger.debug("Initializing Blocking Queue...");
 		logger.debug("Initializing ServerTask Consumer Thread with count = " + consumerThreadCount);
 		startConsumerThread();
 	}
